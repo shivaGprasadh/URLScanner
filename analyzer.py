@@ -40,6 +40,17 @@ IDOR_PARAMS = ['id', 'userid', 'user_id', 'orderid', 'file', 'filename', 'docume
 PATH_TRAVERSAL_PARAMS = ['file', 'filename', 'path', 'dir', 'folder', 'document']
 PATH_TRAVERSAL_PATTERNS = ['../', '%2e%2e%2f']
 
+SENSITIVE_PAGES = [
+    'privacy', 'privacy-policy', 'privacy_policy', 'privacy-notice', 'privacy_notice',
+    'terms', 'terms-and-conditions', 'terms_of_service', 'terms-of-use', 'terms_of_use', 'tos',
+    'security', 'security-policy', 'security_policy',
+    'disclosure', 'information-disclosure',
+    'about', 'contact', 'support', 'help', 'faq',
+    'legal', 'compliance', 'gdpr', 'trust',
+    'cookie', 'cookie-policy', 'cookie_policy', 'cookies', 'cookie_notice', 'cookie-notice',
+    'accessibility'
+]
+
 def analyze_urls(urls):
     """
     Analyze a list of URLs to detect potential security vulnerabilities.
@@ -61,7 +72,8 @@ def analyze_urls(urls):
         'security_misconfiguration': [],
         'csrf': [],
         'idor': [],
-        'path_traversal': []
+        'path_traversal': [],
+        'sensitive_pages': []
     }
     
     logger.debug(f"Analyzing {len(urls)} URLs")
@@ -79,12 +91,12 @@ def analyze_urls(urls):
                 continue
                 
             # Check for SQL injection vulnerabilities
-            for param in SQL_INJECTION_PARAMS:
-                if param in query_params:
+            for query_param in query_params.keys():
+                if any(sql_param in query_param.lower() for sql_param in SQL_INJECTION_PARAMS):
                     results['sql_injection'].append({
                         'url': url,
-                        'parameter': param,
-                        'value': query_params[param][0]
+                        'parameter': query_param,
+                        'value': query_params[query_param][0]
                     })
                     
             # Check for XSS vulnerabilities
@@ -181,6 +193,18 @@ def analyze_urls(urls):
                         'url': url,
                         'path': path,
                         'matched_pattern': misconfig_path
+                    })
+                    break
+
+            # Check for sensitive/compliance pages
+            path = parsed_url.path.lower().strip('/')
+            path_parts = path.split('/')
+            for sensitive_page in SENSITIVE_PAGES:
+                if any(sensitive_page in part for part in path_parts):
+                    results['sensitive_pages'].append({
+                        'url': url,
+                        'path': path,
+                        'matched_pattern': sensitive_page
                     })
                     break
                     

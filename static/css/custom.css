@@ -60,6 +60,33 @@ footer {
     font-weight: 500;
 }
 
+.card-header.bg-dark.bg-opacity-25.text-dark,
+.text-dark,
+.text-center .text-dark,
+h4.text-dark,
+h6.text-dark,
+.bg-dark.bg-opacity-25 .text-dark,
+.card-header.bg-dark h4.text-dark {
+    font-weight: 700 !important;
+    color: #FFD700 !important;
+    text-shadow: none !important;
+}
+
+/* Security Misconfiguration card styling */
+.card-header.bg-dark.bg-opacity-25 {
+    background-color: #fff3cd !important;
+}
+
+/* Specific override for security misconfiguration section */
+.bg-dark.bg-opacity-25 h4.text-dark,
+.bg-dark.bg-opacity-25 h6.text-dark,
+.bg-dark.bg-opacity-25 .text-dark {
+    color: #ffd700 !important;
+    background-color: #fff5cc !important;
+    padding: 8px;
+    border-radius: 4px;
+}
+
 /* Custom alert styling */
 .alert {
     border-left: 4px solid transparent;
@@ -79,4 +106,12 @@ footer {
 
 .alert-success {
     border-left-color: var(--bs-success);
+}
+
+.bg-light.rounded {
+    background-color: rgba(var(--bs-light-rgb), 0.1);
+}
+
+.bg-light.rounded p {
+    color: #4a4a4a;
 }

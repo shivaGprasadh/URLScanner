@@ -34,9 +34,13 @@ def index():
         session['base_url'] = base_url
         
         try:
+            # Get optional sitemap URLs
+            custom_sitemap_urls = request.form.getlist('sitemap_urls[]')
+            custom_sitemap_urls = [url.strip() for url in custom_sitemap_urls if url.strip()]
+            
             # Crawl the website to get all URLs
             logger.debug(f"Starting crawl of {base_url}")
-            discovered_urls = crawl_website(base_url)
+            discovered_urls = crawl_website(base_url, custom_sitemap_urls=custom_sitemap_urls)
             
             if not discovered_urls:
                 flash('No URLs were discovered. Please check the URL and try again.', 'warning')
@@ -79,7 +83,14 @@ def results():
         'sql_injection': len(analysis_results.get('sql_injection', [])),
         'xss': len(analysis_results.get('xss', [])),
         'command_injection': len(analysis_results.get('command_injection', [])),
-        'open_redirect': len(analysis_results.get('open_redirect', []))
+        'open_redirect': len(analysis_results.get('open_redirect', [])),
+        'sensitive_data_exposure': len(analysis_results.get('sensitive_data_exposure', [])),
+        'broken_authentication': len(analysis_results.get('broken_authentication', [])),
+        'security_misconfiguration': len(analysis_results.get('security_misconfiguration', [])),
+        'csrf': len(analysis_results.get('csrf', [])),
+        'idor': len(analysis_results.get('idor', [])),
+        'path_traversal': len(analysis_results.get('path_traversal', [])),
+        'sensitive_pages': len(analysis_results.get('sensitive_pages', []))
     }
     
     return render_template(
@@ -200,7 +211,7 @@ def crawl():
     try:
         # Crawl the website to get all URLs
         logger.debug(f"Starting crawl of {base_url}")
-        discovered_urls = crawl_website(base_url)
+        discovered_urls = crawl_website(base_url, custom_sitemap_urls=[])
         
         if not discovered_urls:
             return jsonify({'status': 'error', 'message': 'No URLs were discovered. Please check the URL and try again.'})

@@ -70,7 +70,7 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <div class="h-100 p-3 bg-light rounded">
                             <h5 class="text-danger">
                                 <i class="fas fa-database me-2"></i> SQL Injection
@@ -80,7 +80,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <div class="h-100 p-3 bg-light rounded">
                             <h5 class="text-warning">
                                 <i class="fas fa-code me-2"></i> Cross-Site Scripting (XSS)
@@ -90,7 +90,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <div class="h-100 p-3 bg-light rounded">
                             <h5 class="text-info">
                                 <i class="fas fa-terminal me-2"></i> Command Injection
@@ -100,13 +100,53 @@
                             </p>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <div class="h-100 p-3 bg-light rounded">
                             <h5 class="text-success">
                                 <i class="fas fa-external-link-alt me-2"></i> Open Redirect
                             </h5>
                             <p>
                                 URLs with parameters like url=, redirect=, next= that might redirect to malicious sites.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="h-100 p-3 bg-light rounded">
+                            <h5 class="text-dark">
+                                <i class="fas fa-shield-alt me-2"></i> Security Misconfiguration
+                            </h5>
+                            <p>
+                                Common paths like /admin, /setup, /config that might expose sensitive configurations.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="h-100 p-3 bg-light rounded">
+                            <h5 class="text-danger">
+                                <i class="fas fa-key me-2"></i> CSRF Issues
+                            </h5>
+                            <p>
+                                Forms and endpoints that might be vulnerable to Cross-Site Request Forgery attacks.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="h-100 p-3 bg-light rounded">
+                            <h5 class="text-info">
+                                <i class="fas fa-user-secret me-2"></i> IDOR
+                            </h5>
+                            <p>
+                                Endpoints with direct object references that might allow unauthorized access.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="h-100 p-3 bg-light rounded">
+                            <h5 class="text-warning">
+                                <i class="fas fa-folder-open me-2"></i> Path Traversal
+                            </h5>
+                            <p>
+                                URLs with file/path parameters that might be vulnerable to directory traversal.
                             </p>
                         </div>
                     </div>
