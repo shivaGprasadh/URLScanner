@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Website Crawler - Error{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                <h3 class="my-2">
+                    <i class="fas fa-exclamation-triangle me-2"></i> Error
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <i class="fas fa-bug text-danger" style="font-size: 4rem;"></i>
+                </div>
+                
+                <div class="alert alert-danger">
+                    <p class="mb-0">{{ error }}</p>
+                </div>
+                
+                <p class="mb-4">
+                    There was an error processing your request. Please check the URL and try again.
+                </p>
+                
+                <div class="text-center">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">
+                        <i class="fas fa-home me-1"></i> Return to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

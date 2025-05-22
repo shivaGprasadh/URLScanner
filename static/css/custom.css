@@ -1,0 +1,82 @@
+/* Custom styles for URL Security Scanner */
+
+/* Card hover effect */
+.card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Make tables more readable */
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table th {
+    background-color: rgba(var(--bs-secondary-rgb), 0.1);
+    font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.05);
+}
+
+/* Code formatting */
+code {
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    background-color: rgba(var(--bs-secondary-rgb), 0.1);
+}
+
+/* Custom badge colors */
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+/* Footer styling */
+footer {
+    margin-top: 3rem;
+    border-top: 1px solid rgba(var(--bs-dark-rgb), 0.5);
+}
+
+/* Form controls */
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Improve table responsiveness */
+.table-responsive {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+/* Improve card readability */
+.card-header {
+    font-weight: 500;
+}
+
+/* Custom alert styling */
+.alert {
+    border-left: 4px solid transparent;
+}
+
+.alert-info {
+    border-left-color: var(--bs-info);
+}
+
+.alert-danger {
+    border-left-color: var(--bs-danger);
+}
+
+.alert-warning {
+    border-left-color: var(--bs-warning);
+}
+
+.alert-success {
+    border-left-color: var(--bs-success);
+}

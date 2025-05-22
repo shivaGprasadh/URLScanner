@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Website Crawler - Home{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="my-2">
+                    <i class="fas fa-spider me-2"></i> Potential URLs Scanner
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    This tool crawls a website and finds URLs that could be tested for potential security issues.
+                </div>
+                
+                <form id="scan-form" class="mt-4">
+                    <div class="mb-3">
+                        <label for="base_url" class="form-label">
+                            <i class="fas fa-link me-1"></i> Enter the website URL to scan:
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">URL</span>
+                            <input type="url" class="form-control" id="base_url" name="base_url" 
+                                   placeholder="https://example.com" required>
+                            <button type="submit" class="btn btn-primary" id="scan-button">
+                                <i class="fas fa-search me-1"></i> Scan
+                            </button>
+                        </div>
+                        <div class="form-text">
+                            Enter a valid URL including the protocol (http:// or https://)
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Loading Indicator (hidden by default) -->
+                <div id="loading-container" class="d-none mt-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center mb-3">
+                                <i class="fas fa-spider me-2"></i> Crawling Website
+                            </h5>
+                            <div class="progress mb-3">
+                                <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                     role="progressbar" style="width: 0%"></div>
+                            </div>
+                            <p id="status-message" class="text-center">Initiating scan...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Error Message Container (hidden by default) -->
+                <div id="error-container" class="d-none mt-4">
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <span id="error-message"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow mt-4">
+            <div class="card-header bg-secondary text-white">
+                <h4 class="my-2">
+                    <i class="fas fa-info-circle me-2"></i> What We Check For
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="h-100 p-3 bg-light rounded">
+                            <h5 class="text-danger">
+                                <i class="fas fa-database me-2"></i> SQL Injection
+                            </h5>
+                            <p>
+                                URLs with parameters like id=, user=, product= that might be vulnerable to SQL injection attacks.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="h-100 p-3 bg-light rounded">
+                            <h5 class="text-warning">
+                                <i class="fas fa-code me-2"></i> Cross-Site Scripting (XSS)
+                            </h5>
+                            <p>
+                                URLs with parameters like search=, q=, query= that could allow script injection.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="h-100 p-3 bg-light rounded">
+                            <h5 class="text-info">
+                                <i class="fas fa-terminal me-2"></i> Command Injection
+                            </h5>
+                            <p>
+                                URLs with suspicious parameters like cmd=, exec=, command= that might execute system commands.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="h-100 p-3 bg-light rounded">
+                            <h5 class="text-success">
+                                <i class="fas fa-external-link-alt me-2"></i> Open Redirect
+                            </h5>
+                            <p>
+                                URLs with parameters like url=, redirect=, next= that might redirect to malicious sites.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

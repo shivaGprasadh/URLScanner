@@ -1,0 +1,614 @@
+{% extends "base.html" %}
+
+{% block title %}Website Crawler - Results{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h3 class="my-2">
+                    <i class="fas fa-chart-bar me-2"></i> Scan Results
+                </h3>
+                <div>
+                    <a href="{{ url_for('export_csv') }}" class="btn btn-outline-light me-2">
+                        <i class="fas fa-file-csv me-1"></i> Export CSV
+                    </a>
+                    <a href="{{ url_for('index') }}" class="btn btn-outline-light">
+                        <i class="fas fa-redo me-1"></i> New Scan
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Scan completed for <strong>{{ base_url }}</strong>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <h5 class="text-muted">Total URLs Scanned</h5>
+                                <h2 class="text-primary">{{ total_urls }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="text-muted mb-3">Potential URLs Found</h5>
+                                <div class="row">
+                                    <!-- First row - original 4 categories -->
+                                    <div class="col-md-3 col-sm-6 mb-2">
+                                        <div class="text-center p-2 rounded bg-danger bg-opacity-25">
+                                            <h6 class="text-danger">SQL Injection</h6>
+                                            <h3>{{ vulnerability_counts.sql_injection }}</h3>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-2">
+                                        <div class="text-center p-2 rounded bg-warning bg-opacity-25">
+                                            <h6 class="text-warning">XSS</h6>
+                                            <h3>{{ vulnerability_counts.xss }}</h3>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-2">
+                                        <div class="text-center p-2 rounded bg-info bg-opacity-25">
+                                            <h6 class="text-info">Command Injection</h6>
+                                            <h3>{{ vulnerability_counts.command_injection }}</h3>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-2">
+                                        <div class="text-center p-2 rounded bg-success bg-opacity-25">
+                                            <h6 class="text-success">Open Redirect</h6>
+                                            <h3>{{ vulnerability_counts.open_redirect }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Additional vulnerability categories (row 2) -->
+                                <div class="row mt-2">
+                                    <div class="col-md-3 col-sm-6 mb-2">
+                                        <div class="text-center p-2 rounded bg-primary bg-opacity-25">
+                                            <h6 class="text-primary">Sensitive Data</h6>
+                                            <h3>{{ vulnerability_counts.sensitive_data_exposure }}</h3>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-2">
+                                        <div class="text-center p-2 rounded bg-secondary bg-opacity-25">
+                                            <h6 class="text-secondary">Auth Issues</h6>
+                                            <h3>{{ vulnerability_counts.broken_authentication }}</h3>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-2">
+                                        <div class="text-center p-2 rounded bg-dark bg-opacity-25">
+                                            <h6 class="text-dark">Security Misconfig</h6>
+                                            <h3>{{ vulnerability_counts.security_misconfiguration }}</h3>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-2">
+                                        <div class="text-center p-2 rounded bg-danger bg-opacity-10">
+                                            <h6 class="text-danger">CSRF Issues</h6>
+                                            <h3>{{ vulnerability_counts.csrf }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Additional vulnerability categories (row 3) -->
+                                <div class="row mt-2">
+                                    <div class="col-md-6 col-sm-6 mb-2">
+                                        <div class="text-center p-2 rounded bg-info bg-opacity-10">
+                                            <h6 class="text-info">IDOR Vulnerabilities</h6>
+                                            <h3>{{ vulnerability_counts.idor }}</h3>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 mb-2">
+                                        <div class="text-center p-2 rounded bg-warning bg-opacity-10">
+                                            <h6 class="text-warning">Path Traversal</h6>
+                                            <h3>{{ vulnerability_counts.path_traversal }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- SQL Injection Results -->
+                <div class="card mb-4">
+                    <div class="card-header bg-danger bg-opacity-25 text-danger">
+                        <h4 class="my-1">
+                            <i class="fas fa-database me-2"></i> 
+                            Try SQL Injection Attack ({{ vulnerability_counts.sql_injection }})
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if analysis_results.sql_injection %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>URL</th>
+                                            <th>Parameter</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in analysis_results.sql_injection %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td>
+                                                <td>
+                                                    <a href="{{ item.url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 500px;">
+                                                        {{ item.url }}
+                                                    </a>
+                                                </td>
+                                                <td><code>{{ item.parameter }}</code></td>
+                                                <td><code>{{ item.value }}</code></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success">
+                                No potential URLs for SQL injection testing found.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- XSS Results -->
+                <div class="card mb-4">
+                    <div class="card-header bg-warning bg-opacity-25 text-warning">
+                        <h4 class="my-1">
+                            <i class="fas fa-code me-2"></i>
+                            Try Cross-Site Scripting Attack ({{ vulnerability_counts.xss }})
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if analysis_results.xss %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>URL</th>
+                                            <th>Parameter</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in analysis_results.xss %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td>
+                                                <td>
+                                                    <a href="{{ item.url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 500px;">
+                                                        {{ item.url }}
+                                                    </a>
+                                                </td>
+                                                <td><code>{{ item.parameter }}</code></td>
+                                                <td><code>{{ item.value }}</code></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success">
+                                No potential URLs for cross-site scripting testing found.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Command Injection Results -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info bg-opacity-25 text-info">
+                        <h4 class="my-1">
+                            <i class="fas fa-terminal me-2"></i>
+                            Try Command Injection Attack ({{ vulnerability_counts.command_injection }})
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if analysis_results.command_injection %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>URL</th>
+                                            <th>Parameter</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in analysis_results.command_injection %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td>
+                                                <td>
+                                                    <a href="{{ item.url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 500px;">
+                                                        {{ item.url }}
+                                                    </a>
+                                                </td>
+                                                <td><code>{{ item.parameter }}</code></td>
+                                                <td><code>{{ item.value }}</code></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success">
+                                No potential URLs for command injection testing found.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Open Redirect Results -->
+                <div class="card mb-4">
+                    <div class="card-header bg-success bg-opacity-25 text-success">
+                        <h4 class="my-1">
+                            <i class="fas fa-external-link-alt me-2"></i>
+                            Try Open Redirect Attack ({{ vulnerability_counts.open_redirect }})
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if analysis_results.open_redirect %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>URL</th>
+                                            <th>Parameter</th>
+                                            <th>Value</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in analysis_results.open_redirect %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td>
+                                                <td>
+                                                    <a href="{{ item.url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 400px;">
+                                                        {{ item.url }}
+                                                    </a>
+                                                </td>
+                                                <td><code>{{ item.parameter }}</code></td>
+                                                <td><code>{{ item.value }}</code></td>
+                                                <td>
+                                                    {% if item.is_external %}
+                                                        <span class="badge bg-danger">External Redirect</span>
+                                                    {% else %}
+                                                        <span class="badge bg-warning">Internal Redirect</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success">
+                                No potential URLs for open redirect testing found.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Sensitive Data Exposure Results -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary bg-opacity-25 text-primary">
+                        <h4 class="my-1">
+                            <i class="fas fa-key me-2"></i>
+                            Try Sensitive Data Exposure ({{ vulnerability_counts.sensitive_data_exposure }})
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if analysis_results.sensitive_data_exposure %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>URL</th>
+                                            <th>Parameter</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in analysis_results.sensitive_data_exposure %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td>
+                                                <td>
+                                                    <a href="{{ item.url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 500px;">
+                                                        {{ item.url }}
+                                                    </a>
+                                                </td>
+                                                <td><code>{{ item.parameter }}</code></td>
+                                                <td><code>{{ item.value }}</code></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success">
+                                No potential URLs for sensitive data exposure testing found.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Broken Authentication Results -->
+                <div class="card mb-4">
+                    <div class="card-header bg-secondary bg-opacity-25 text-secondary">
+                        <h4 class="my-1">
+                            <i class="fas fa-user-lock me-2"></i>
+                            Try Broken Authentication ({{ vulnerability_counts.broken_authentication }})
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if analysis_results.broken_authentication %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>URL</th>
+                                            <th>Parameter</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in analysis_results.broken_authentication %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td>
+                                                <td>
+                                                    <a href="{{ item.url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 500px;">
+                                                        {{ item.url }}
+                                                    </a>
+                                                </td>
+                                                <td><code>{{ item.parameter }}</code></td>
+                                                <td><code>{{ item.value }}</code></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success">
+                                No potential URLs for broken authentication testing found.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Security Misconfiguration Results -->
+                <div class="card mb-4">
+                    <div class="card-header bg-dark bg-opacity-25 text-dark">
+                        <h4 class="my-1">
+                            <i class="fas fa-cogs me-2"></i>
+                            Try Security Misconfiguration ({{ vulnerability_counts.security_misconfiguration }})
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if analysis_results.security_misconfiguration %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>URL</th>
+                                            <th>Path</th>
+                                            <th>Matched Pattern</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in analysis_results.security_misconfiguration %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td>
+                                                <td>
+                                                    <a href="{{ item.url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 500px;">
+                                                        {{ item.url }}
+                                                    </a>
+                                                </td>
+                                                <td><code>{{ item.path }}</code></td>
+                                                <td><code>{{ item.matched_pattern }}</code></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success">
+                                No potential URLs for security misconfiguration testing found.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- CSRF Results -->
+                <div class="card mb-4">
+                    <div class="card-header bg-danger bg-opacity-10 text-danger">
+                        <h4 class="my-1">
+                            <i class="fas fa-ban me-2"></i>
+                            Try CSRF ({{ vulnerability_counts.csrf }})
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if analysis_results.csrf %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>URL</th>
+                                            <th>Parameter</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in analysis_results.csrf %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td>
+                                                <td>
+                                                    <a href="{{ item.url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 500px;">
+                                                        {{ item.url }}
+                                                    </a>
+                                                </td>
+                                                <td><code>{{ item.parameter }}</code></td>
+                                                <td><code>{{ item.value }}</code></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success">
+                                No potential URLs for CSRF testing found.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- IDOR Results -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info bg-opacity-10 text-info">
+                        <h4 class="my-1">
+                            <i class="fas fa-exchange-alt me-2"></i>
+                            Try IDOR ({{ vulnerability_counts.idor }})
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if analysis_results.idor %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>URL</th>
+                                            <th>Parameter</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in analysis_results.idor %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td>
+                                                <td>
+                                                    <a href="{{ item.url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 500px;">
+                                                        {{ item.url }}
+                                                    </a>
+                                                </td>
+                                                <td><code>{{ item.parameter }}</code></td>
+                                                <td><code>{{ item.value }}</code></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success">
+                                No potential URLs for IDOR testing found.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Path Traversal Results -->
+                <div class="card mb-4">
+                    <div class="card-header bg-warning bg-opacity-10 text-warning">
+                        <h4 class="my-1">
+                            <i class="fas fa-folder-open me-2"></i>
+                            Try Path Traversal ({{ vulnerability_counts.path_traversal }})
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if analysis_results.path_traversal %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>URL</th>
+                                            <th>Parameter</th>
+                                            <th>Value</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in analysis_results.path_traversal %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td>
+                                                <td>
+                                                    <a href="{{ item.url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 400px;">
+                                                        {{ item.url }}
+                                                    </a>
+                                                </td>
+                                                <td><code>{{ item.parameter }}</code></td>
+                                                <td><code>{{ item.value }}</code></td>
+                                                <td>
+                                                    {% if item.has_traversal_pattern %}
+                                                        <span class="badge bg-danger">Traversal Pattern</span>
+                                                    {% else %}
+                                                        <span class="badge bg-warning">File Path Parameter</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success">
+                                No potential URLs for path traversal testing found.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- All Crawled URLs -->
+                <div class="card mb-4">
+                    <div class="card-header bg-secondary bg-opacity-25 text-secondary">
+                        <h4 class="my-1">
+                            <i class="fas fa-link me-2"></i>
+                            All Crawled URLs ({{ total_urls }})
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if discovered_urls %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>URL</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for url in discovered_urls %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td>
+                                                <td>
+                                                    <a href="{{ url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 800px;">
+                                                        {{ url }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                No URLs were discovered during crawling.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
