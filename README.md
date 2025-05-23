@@ -88,3 +88,19 @@ Database location: `instance/patterns.db`
 - Rate limiting: Automatic retry with backoff
 - Connection errors: Graceful failure with error reporting
 - Invalid URLs: Input validation and error messages
+
+## Required Modules
+
+The application requires Python 3.11 or higher and the following dependencies:
+
+- beautifulsoup4 (>=4.13.4) - HTML parsing and web scraping
+- email-validator (>=2.2.0) - URL and email validation
+- flask (>=3.1.1) - Web framework
+- flask-sqlalchemy (>=3.1.1) - Database ORM
+- gunicorn (>=23.0.0) - Production WSGI server
+- psycopg2-binary (>=2.9.10) - PostgreSQL adapter
+- requests (>=2.32.3) - HTTP client for crawling
+- trafilatura (>=2.0.0) - Web content extraction
+- urllib3 (>=2.4.0) - HTTP client library
+
+All dependencies are automatically handled by Replit's environment.
