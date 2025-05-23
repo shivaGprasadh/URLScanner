@@ -27,7 +27,7 @@ IDOR_PATTERN = r'(?i)(id|userid|user_id|orderid|file|filename|document|doc|recor
 
 PATH_TRAVERSAL_PATTERN = r'(?i)(file|filename|path|dir|folder|document)=.*(\.\./|%2e%2e%2f)'
 
-SENSITIVE_PAGES_PATTERN = r'(?i)/(privacy|terms|security|disclosure|about|contact|support|help|faq|legal|compliance|gdpr|trust|cookie|accessibility)/?'
+SENSITIVE_PAGES_PATTERN = r'(?i)(privacy|terms|security|disclosure|about|contact|support|help|faq|legal|compliance|gdpr|trust|cookie|accessibility)'
 
 def analyze_urls(urls):
     """
@@ -172,11 +172,25 @@ def analyze_urls(urls):
                 })
 
             if re.search(SENSITIVE_PAGES_PATTERN, path):
-                results['sensitive_pages'].append({
-                    'url': url,
-                    'path': path,
-                    'matched_pattern': re.search(SENSITIVE_PAGES_PATTERN, path).group(1)
-                })
+                # Normalize URL for comparison by removing protocol and trailing slashes
+                normalized_current = url.replace('https://', '').replace('http://', '').lower().rstrip('/')
+                
+                # Check if this normalized URL already exists in results
+                exists = False
+                for item in results['sensitive_pages']:
+                    normalized_existing = item['url'].replace('https://', '').replace('http://', '').lower().rstrip('/')
+                    if normalized_current == normalized_existing:
+                        exists = True
+                        break
+                
+                # Only add if URL doesn't exist yet
+                if not exists:
+                    # Prefer HTTPS version
+                    results['sensitive_pages'].append({
+                        'url': url.replace('http://', 'https://'),
+                        'path': path,
+                        'matched_pattern': re.search(SENSITIVE_PAGES_PATTERN, path).group(1)
+                    })
 
         except Exception as e:
             logger.error(f"Error analyzing URL {url}: {str(e)}")

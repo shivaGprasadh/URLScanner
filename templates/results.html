@@ -24,7 +24,7 @@
                     <i class="fas fa-info-circle me-2"></i>
                     Scan completed for <strong>{{ base_url }}</strong>
                 </div>
-                
+
                 <div class="row mb-4">
                     <div class="col-md-3 mb-3">
                         <div class="card text-center h-100">
@@ -111,7 +111,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- SQL Injection Results -->
                 <div class="card mb-4">
                     <div class="card-header bg-danger bg-opacity-25 text-danger">
@@ -155,7 +155,7 @@
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <!-- XSS Results -->
                 <div class="card mb-4">
                     <div class="card-header bg-warning bg-opacity-25 text-warning">
@@ -199,7 +199,7 @@
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <!-- Command Injection Results -->
                 <div class="card mb-4">
                     <div class="card-header bg-info bg-opacity-25 text-info">
@@ -243,7 +243,7 @@
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <!-- Open Redirect Results -->
                 <div class="card mb-4">
                     <div class="card-header bg-success bg-opacity-25 text-success">
@@ -295,7 +295,7 @@
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <!-- Sensitive Data Exposure Results -->
                 <div class="card mb-4">
                     <div class="card-header bg-primary bg-opacity-25 text-primary">
@@ -339,7 +339,7 @@
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <!-- Broken Authentication Results -->
                 <div class="card mb-4">
                     <div class="card-header bg-secondary bg-opacity-25 text-secondary">
@@ -383,7 +383,7 @@
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <!-- Security Misconfiguration Results -->
                 <div class="card mb-4">
                     <div class="card-header bg-dark bg-opacity-25 text-dark">
@@ -427,7 +427,7 @@
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <!-- CSRF Results -->
                 <div class="card mb-4">
                     <div class="card-header bg-danger bg-opacity-10 text-danger">
@@ -471,7 +471,7 @@
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <!-- IDOR Results -->
                 <div class="card mb-4">
                     <div class="card-header bg-info bg-opacity-10 text-info">
@@ -515,7 +515,7 @@
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <!-- Path Traversal Results -->
                 <div class="card mb-4">
                     <div class="card-header bg-warning bg-opacity-10 text-warning">
@@ -567,7 +567,7 @@
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <!-- All Crawled URLs -->
                 <div class="card mb-4">
                     <div class="card-header bg-secondary bg-opacity-25 text-secondary">
@@ -603,6 +603,44 @@
                         {% else %}
                             <div class="alert alert-info">
                                 No URLs were discovered during crawling.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Sensitive Pages Results -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info bg-opacity-25 text-info">
+                        <h4 class="my-1">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            Try Sensitive Pages ({{ vulnerability_counts.sensitive_pages }})
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if analysis_results.sensitive_pages %}
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>URL</th>
+                                        <th>Path</th>
+                                        <th>Matched Pattern</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in analysis_results.sensitive_pages %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
+                                            <td><a href="{{ item.url }}" target="_blank">{{ item.url }}</a></td>
+                                            <td>{{ item.path }}</td>
+                                            <td>{{ item.matched_pattern }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <div class="alert alert-success">
+                                No sensitive pages found.
                             </div>
                         {% endif %}
                     </div>

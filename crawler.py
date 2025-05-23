@@ -177,7 +177,10 @@ def crawl_website(base_url, max_urls=100, max_depth=3, custom_sitemap_urls=None)
 
             # Skip if the response is not successful
             if response.status_code != 200:
-                logger.warning(f"Failed to fetch {current_url}: HTTP {response.status_code}")
+                error_msg = f"Failed to fetch {current_url}: HTTP {response.status_code}"
+                logger.warning(error_msg)
+                if response.status_code == 403:
+                    raise requests.exceptions.HTTPError(f"403 - Access Forbidden: {current_url}")
                 continue
 
             # Add the URL to discovered URLs

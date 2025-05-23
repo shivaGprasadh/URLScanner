@@ -228,24 +228,32 @@ def crawl():
         if not discovered_urls:
             return jsonify({'status': 'error', 'message': 'No URLs were discovered. Please check the URL and try again.'})
 
+    except requests.exceptions.HTTPError as e:
+        logger.error(f"HTTP Error during crawling: {str(e)}")
+        if hasattr(e, 'response') and e.response.status_code == 403:
+            return jsonify({'status': 'error', 'message': '403 - Failed to crawl: Access Forbidden'})
+        return jsonify({'status': 'error', 'message': f'HTTP Error occurred: {str(e)}'})
+    
+    except Exception as e:
+        logger.error(f"Error during crawling or analysis: {str(e)}")
+        return jsonify({'status': 'error', 'message': f'An error occurred: {str(e)}'})
+
         # Analyze the discovered URLs for potential vulnerabilities
-        logger.debug(f"Analyzing {len(discovered_urls)} discovered URLs")
-        analysis_results = analyzer.analyze_urls(discovered_urls)
+    logger.debug(f"Analyzing {len(discovered_urls)} discovered URLs")
+    analysis_results = analyzer.analyze_urls(discovered_urls)
 
         # Store the results in session for display
-        session['analysis_results'] = analysis_results
-        session['total_urls'] = len(discovered_urls)
-        session['discovered_urls'] = discovered_urls
+    session['analysis_results'] = analysis_results
+    session['total_urls'] = len(discovered_urls)
+    session['discovered_urls'] = discovered_urls
 
-        return jsonify({
+    return jsonify({
             'status': 'success', 
             'message': 'Crawling and analysis complete',
             'redirect': url_for('results')
         })
 
-    except Exception as e:
-        logger.error(f"Error during crawling or analysis: {str(e)}")
-        return jsonify({'status': 'error', 'message': f'An error occurred: {str(e)}'})
+
 
 @app.errorhandler(500)
 def server_error(e):

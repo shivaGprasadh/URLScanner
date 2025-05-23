@@ -84,7 +84,14 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 // Handle error
                 hideLoading();
-                showError('An error occurred: ' + error);
+                fetch(error.url)
+                    .then(response => response.json())
+                    .then(data => {
+                        showError(data.message || 'An error occurred while processing your request');
+                    })
+                    .catch(() => {
+                        showError('An error occurred while processing your request');
+                    });
             });
         });
     }
@@ -174,6 +181,13 @@ function showError(message) {
     
     errorMessage.textContent = message;
     errorContainer.classList.remove('d-none');
+    errorContainer.classList.add('alert', 'alert-danger', 'mt-3');
+    
+    // Scroll error into view
+    errorContainer.scrollIntoView({ behavior: 'smooth' });
+    
+    // Hide loading container
+    hideLoading();
 }
 
 // Function to simulate progress for better UX
