@@ -1,0 +1,50 @@
+
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Pattern Management</h2>
+    
+    <div class="row">
+        <div class="col-md-12">
+            {% for category in ['sql_injection', 'xss', 'command_injection', 'open_redirect', 'sensitive_data', 'broken_authentication', 'security_misconfiguration', 'csrf', 'idor', 'path_traversal', 'sensitive_pages'] %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>{{ category|replace('_', ' ')|title }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('add_pattern') }}" id="form-{{ category }}">
+                        <input type="hidden" name="category" value="{{ category }}">
+                        <div class="mb-3">
+                            <label>Current Pattern:</label>
+                            <div class="d-flex align-items-center">
+                                <pre class="bg-light p-2 text-dark flex-grow-1" id="pattern-{{ category }}">{{ all_patterns.get(category, '') }}</pre>
+                                <button type="button" class="btn btn-secondary ms-2" onclick="enableEdit('{{ category }}')">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3" id="edit-group-{{ category }}" style="display: none;">
+                            <textarea class="form-control" name="pattern" id="input-{{ category }}" rows="3" placeholder="Enter regex pattern">{{ all_patterns.get(category, '') }}</textarea>
+                            <button class="btn btn-primary" type="submit">Save Pattern</button>
+                            <button class="btn btn-secondary" type="button" onclick="cancelEdit('{{ category }}')">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+function enableEdit(category) {
+    document.getElementById(`pattern-${category}`).style.display = 'none';
+    document.getElementById(`edit-group-${category}`).style.display = 'flex';
+}
+
+function cancelEdit(category) {
+    document.getElementById(`pattern-${category}`).style.display = 'block';
+    document.getElementById(`edit-group-${category}`).style.display = 'none';
+}
+</script>
+{% endblock %}

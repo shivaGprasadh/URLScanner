@@ -68,23 +68,31 @@ h6.text-dark,
 .bg-dark.bg-opacity-25 .text-dark,
 .card-header.bg-dark h4.text-dark {
     font-weight: 700 !important;
-    color: #FFD700 !important;
+    color: #000000 !important;
     text-shadow: none !important;
 }
 
 /* Security Misconfiguration card styling */
+/* Custom styling for Security Misconfiguration cards */
+.text-center .bg-dark.bg-opacity-25,
 .card-header.bg-dark.bg-opacity-25 {
-    background-color: #fff3cd !important;
+    background-color: #9370DB !important;
+    background-opacity: 0.25;
 }
 
-/* Specific override for security misconfiguration section */
-.bg-dark.bg-opacity-25 h4.text-dark,
-.bg-dark.bg-opacity-25 h6.text-dark,
-.bg-dark.bg-opacity-25 .text-dark {
-    color: #ffd700 !important;
-    background-color: #fff5cc !important;
-    padding: 8px;
-    border-radius: 4px;
+.text-center .bg-dark.bg-opacity-25 h6.text-dark,
+.text-center .bg-dark.bg-opacity-25 h3,
+.card-header.bg-dark.bg-opacity-25 h4.text-dark {
+    color: #4B0082 !important;
+}
+
+/* Security Misconfig count card in Potential URLs Found */
+.text-center .bg-dark.bg-opacity-25 {
+    background-color: #E6E6FA !important;  /* Light purple background */
+}
+
+.text-center .bg-dark.bg-opacity-25 h6.text-dark {
+    color: #483D8B !important;  /* Dark slate blue text */
 }
 
 /* Custom alert styling */
