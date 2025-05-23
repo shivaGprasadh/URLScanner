@@ -19,11 +19,71 @@ A web-based security scanning tool that crawls websites to detect potential secu
 - Results export to CSV
 - Customizable vulnerability patterns
 
-## Setup
+## Installation Steps
 
-1. Fork this repl or create a new Flask repl
-2. The application uses SQLite database which will be automatically created in the `instance` folder
-3. No additional configuration is needed as all dependencies are handled by Replit
+1. **Create a New Repl**
+   - Go to [Replit.com](https://replit.com)
+   - Click "Create Repl"
+   - Choose "Python" as the template
+   - Name your repl (e.g., "url-security-scanner")
+   - Click "Create Repl"
+
+2. **Set Up Project Structure**
+   ```
+   /
+   ├── instance/
+   ├── static/
+   │   ├── css/
+   │   │   └── custom.css
+   │   └── js/
+   │       └── main.js
+   ├── templates/
+   │   ├── base.html
+   │   ├── error.html
+   │   ├── index.html
+   │   ├── patterns.html
+   │   └── results.html
+   ├── analyzer.py
+   ├── app.py
+   ├── crawler.py
+   ├── main.py
+   └── models.py
+   ```
+
+3. **Install Dependencies**
+   The following packages will be installed automatically through pyproject.toml:
+   - beautifulsoup4 (>=4.13.4)
+   - email-validator (>=2.2.0)
+   - flask (>=3.1.1)
+   - flask-sqlalchemy (>=3.1.1)
+   - gunicorn (>=23.0.0)
+   - psycopg2-binary (>=2.9.10)
+   - requests (>=2.32.3)
+   - trafilatura (>=2.0.0)
+   - urllib3 (>=2.4.0)
+
+4. **Create and Configure Files**
+   - Copy all the source files (app.py, analyzer.py, crawler.py, etc.)
+   - Copy the templates into the templates folder
+   - Copy the static files (CSS/JS) into their respective folders
+   - The SQLite database will be automatically created in the instance folder
+
+5. **Run the Application**
+   - Click the "Run" button in Replit
+   - The application will start on port 5000
+   - Access the web interface through your Repl's URL
+
+6. **Verify Installation**
+   - The main interface should show a URL input form
+   - You should see the "What We Check For" section
+   - No error messages should appear in the console
+   - Try a test scan with a sample URL
+
+7. **Troubleshooting**
+   - If dependencies aren't installed, Replit will install them automatically
+   - Check the console for any error messages
+   - Ensure all files are in their correct directories
+   - Make sure the database is created in the instance folder
 
 ## Usage
 
